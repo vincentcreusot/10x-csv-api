@@ -12,10 +12,10 @@ run: build
 	./${BINARY_NAME} seattle-weather.csv
 
 docker-build:
-    docker build -t ${BINARY_NAME} .
+	@docker build -t ${BINARY_NAME} .
 
 docker-run:
-    docker run -p 8080:8080 ${BINARY_NAME} seattle-weather.csv
+	@docker run -p 8080:8080 ${BINARY_NAME} seattle-weather.csv
  
 clean:
 	go clean

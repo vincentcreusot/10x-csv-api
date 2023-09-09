@@ -2,6 +2,7 @@ package csv
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/vincentcreusot/10x-csv-api/pkg/structs"
@@ -15,9 +16,10 @@ func TestParseLines(t *testing.T) {
 			{"2012-01-01", "0.0", "12.8", "5.0", "4.7", "drizzle"},
 		}
 
+		testDate, _ := time.Parse("2006-01-02", "2012-01-01")
 		expected := []structs.WeatherLine{
 			{
-				Date:          "2012-01-01",
+				Date:          testDate,
 				Precipitation: 0.0,
 				TempMax:       12.8,
 				TempMin:       5.0,

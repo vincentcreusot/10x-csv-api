@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/vincentcreusot/10x-csv-api/pkg/api"
 	"github.com/vincentcreusot/10x-csv-api/pkg/csv"
 )
 
@@ -16,5 +17,9 @@ func main() {
 	filepath := os.Args[1]
 
 	fileLines := csv.ParseCsv(filepath)
-	fmt.Println((fileLines[0]))
+
+	wlapi := api.NewWeatherApi(fileLines)
+	router := wlapi.SetupRouter()
+	wlapi.Start(router)
+
 }

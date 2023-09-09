@@ -5,13 +5,11 @@ import (
 	"log/slog"
 	"os"
 	"strconv"
-	"time"
 
 	"github.com/vincentcreusot/10x-csv-api/pkg/structs"
 )
 
 var logger *slog.Logger = slog.New(slog.NewJSONHandler(os.Stdout, nil))
-var dateLayout = "2006-01-02"
 
 func ParseCsv(filepath string) []structs.WeatherLine {
 
@@ -40,12 +38,7 @@ func parseLines(parsedData [][]string) []structs.WeatherLine {
 	for i, line := range parsedData {
 		if i > 0 {
 			wl := structs.WeatherLine{}
-			var err error
-			wl.Date, err = time.Parse(dateLayout, line[0])
-			if err != nil {
-				logger.Info("error parsing ̈field date for value "+line[0], err)
-				wl.Corrupted = true
-			}
+			wl.Date = line[0]
 			wl.Precipitation = parseNumber(line[1], "precipitation", &wl)
 			wl.TempMax = parseNumber(line[2], "temp_max", &wl)
 			wl.TempMin = parseNumber(line[3], "temp_min", &wl)
@@ -64,6 +57,7 @@ func parseNumber(value string, field string, wo *structs.WeatherLine) float64 {
 	f, err := strconv.ParseFloat(value, 64)
 	if err != nil {
 		logger.Info("error parsing ̈field "+field+"for value "+value, err)
+		wo.Corrupted = true
 	}
 	return f
 }
