@@ -1,7 +1,5 @@
 package structs
 
-const DateFormat = "2006-01-02"
-
 // date,precipitation,temp_max,temp_min,wind,weather
 type WeatherLine struct {
 	Date          string  `json:"date"`

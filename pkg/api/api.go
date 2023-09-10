@@ -17,24 +17,30 @@ import (
 
 var logger *slog.Logger = slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
+// WeatherApi holder for the API
 type WeatherApi struct {
 	Lines []structs.WeatherLine
 }
 
+// NewWeatherApi constructs a new WeatherApi instance
+// @param lines - The parsed CSV data
 func NewWeatherApi(lines []structs.WeatherLine) *WeatherApi {
 	return &WeatherApi{
 		Lines: lines,
 	}
 }
 
+// SetupRouter sets up the HTTP router and routes
 func (a *WeatherApi) SetupRouter() *gin.Engine {
 	r := gin.Default()
 
+	// define /query as the path to get the weather lines
 	r.GET("/query", a.getWeatherLines)
 
 	return r
 }
 
+// Start starts the API server
 func (a *WeatherApi) Start(router *gin.Engine) {
 	srv := &http.Server{
 		Addr:    ":8080",
@@ -42,22 +48,16 @@ func (a *WeatherApi) Start(router *gin.Engine) {
 	}
 
 	go func() {
-		// service connections
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logger.Error("listen: %s\n", err)
 		}
 	}()
 
 	quit := make(chan os.Signal, 1)
-	// kill (no param) default send syscall.SIGTERM
-	// kill -2 is syscall.SIGINT
-	// kill -9 is syscall.SIGKILL but can't be catch, so don't need add it
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	logger.Info("Shutting down server...")
 
-	// The context is used to inform the server it has 5 seconds to finish
-	// the request it is currently handling
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
@@ -68,9 +68,8 @@ func (a *WeatherApi) Start(router *gin.Engine) {
 }
 
 func (a *WeatherApi) getWeatherLines(c *gin.Context) {
-	// Get date filter query param
 	dateFilter := c.Query("date")
-	limit := c.Query("limit")
+	limitFilter := c.Query("limit")
 	weatherFilter := c.Query("weather")
 
 	// Filter lines by date if provided
@@ -98,8 +97,8 @@ func (a *WeatherApi) getWeatherLines(c *gin.Context) {
 	}
 
 	// Apply limit filter
-	if limit != "" {
-		limitNum, _ := strconv.Atoi(limit)
+	if limitFilter != "" {
+		limitNum, _ := strconv.Atoi(limitFilter)
 		limitApplied := int(math.Min(float64(len(resultLines)), float64(limitNum)))
 		resultLines = resultLines[:limitApplied]
 	}
