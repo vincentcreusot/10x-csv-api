@@ -88,6 +88,11 @@ The `Dockerfile.test` file provided uses the `test.sh` bash script.
 The docker image can be run with the API container with a `docker-compose` definition.
 The composed package can be run using 
 ```
-docker-compose up
+make compose
 ```
+Then to ensure the containers are not running, run 
+```
+make compose-down
+```
+
 

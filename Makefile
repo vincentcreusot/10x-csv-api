@@ -17,9 +17,18 @@ run: build
 docker-build:
 	@docker build -t ${BINARY_NAME} -f Dockerfile .
 
-docker-run:
+docker-run: docker-build
 	@docker run -p 8080:8080 ${BINARY_NAME}
- 
+
+compose-build:
+	@docker-compose build
+
+compose: compose-build
+	@docker-compose up
+
+compose-down:
+	@docker-compose down
+
 clean:
 	@go clean
 	@rm -f ${BINARY_NAME}
