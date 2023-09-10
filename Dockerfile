@@ -1,4 +1,4 @@
-FROM golang:1.21 AS build
+FROM golang:1.21 AS build-stage
 
 WORKDIR /app
 
@@ -9,17 +9,22 @@ COPY go.mod go.sum ./
 RUN go mod download 
 
 # Copy source code
-COPY . .
+COPY cmd cmd/
+COPY pkg pkg/
 
-# Build the Go app
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+# Build the app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -o csvapi cmd/10x-csv-api/10x-csv-api.go
 
 # Production image
-FROM alpine:latest
+FROM gcr.io/distroless/base-debian12 AS run-stage
 
-WORKDIR /app
+WORKDIR /
 
 # Copy binary from build stage
-COPY --from=build /app/main .
+COPY --from=build-stage /app/csvapi csvapi
+COPY seattle-weather.csv seattle-weather.csv
+
+USER nonroot:nonroot
 EXPOSE 8080
-CMD ["./main"] 
+ENTRYPOINT [ "./csvapi" ]
+CMD [ "seattle-weather.csv" ]

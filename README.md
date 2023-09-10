@@ -29,3 +29,38 @@ Query the service API from outside the container
 Write a script to test the service API
 Bundle the test script into its own Docker image
 Run the test script image from a separate container and hit the same API
+
+## Usage
+
+### Requirements
+Uses some tools. A Makefile is provided for the common tasks.
+
+The testing script uses `bash` and `curl` and `jq` for JSON parsing.
+
+### Build
+There is a `build` target that builds the go source code to a `10x-csv-api` binary.
+That means you can run: 
+```
+make build
+```
+to build the go binary.
+
+### Run
+The executable takes the CSV file path as command line argument. It will start a server on port 8080.
+A target exists that takes the provided CSV file and runs the executable. You can then execute: 
+```
+make run
+```
+
+## Tests
+### Unit tests
+The csv parser contains unit tests. You can run them using:
+```
+make test
+```
+### API tests
+Tests for the API are done with a bash script. 
+
+### Docker build
+The 
+### Docker run

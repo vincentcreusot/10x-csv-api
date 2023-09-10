@@ -3,21 +3,21 @@ all: build test
 
 .PHONY: build test run docker-run docker-build
 build:
-	go build -o ${BINARY_NAME} cmd/10x-csv-api/10x-csv-api.go
+	@go build -o ${BINARY_NAME} cmd/10x-csv-api/10x-csv-api.go
  
 test:
-	go test -v ./...
+	@go test -v ./...
  
 run: build
 	./${BINARY_NAME} seattle-weather.csv
 
 docker-build:
-	@docker build -t ${BINARY_NAME} .
+	@docker build -t ${BINARY_NAME} -f Dockerfile .
 
 docker-run:
-	@docker run -p 8080:8080 ${BINARY_NAME} seattle-weather.csv
+	@docker run -p 8080:8080 ${BINARY_NAME}
  
 clean:
-	go clean
-	rm -f ${BINARY_NAME}
-	docker rmi ${BINARY_NAME}
+	@go clean
+	@rm -f ${BINARY_NAME}
+	@docker rmi ${BINARY_NAME}
