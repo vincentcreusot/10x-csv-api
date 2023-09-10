@@ -9,6 +9,7 @@ Create a web service that converts a CSV file into an API that exposes JSON.
 Uses some tools. A Makefile is provided for the common tasks.
 
 The testing script uses `bash`, `curl` and `jq` for JSON parsing.
+It is written using go 1.21 as specified in the `go.mod` file.
 
 ### Build
 There is a `build` target that builds the go source code to a `10x-csv-api` binary.

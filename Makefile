@@ -2,9 +2,12 @@ BINARY_NAME=10x-csv-api
 all: build test
 
 .PHONY: build test run docker-run docker-build
-build:
+build: deps
 	@go build -o ${BINARY_NAME} cmd/10x-csv-api/10x-csv-api.go
- 
+
+deps:
+	@go mod download
+
 test:
 	@go test -v ./...
 
