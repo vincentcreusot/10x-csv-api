@@ -1,0 +1,4 @@
+FROM alpine
+RUN apk add bash curl jq
+COPY test/test.sh test/test.sh
+CMD ["bash" , "/test/test.sh", "api"]
