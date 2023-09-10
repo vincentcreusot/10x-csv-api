@@ -7,6 +7,9 @@ build:
  
 test:
 	@go test -v ./...
+
+api-test: 
+	bash test/test.sh localhost
  
 run: build
 	./${BINARY_NAME} seattle-weather.csv

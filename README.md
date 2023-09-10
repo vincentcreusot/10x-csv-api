@@ -35,7 +35,7 @@ Run the test script image from a separate container and hit the same API
 ### Requirements
 Uses some tools. A Makefile is provided for the common tasks.
 
-The testing script uses `bash` and `curl` and `jq` for JSON parsing.
+The testing script uses `bash`, `curl` and `jq` for JSON parsing.
 
 ### Build
 There is a `build` target that builds the go source code to a `10x-csv-api` binary.
@@ -52,6 +52,18 @@ A target exists that takes the provided CSV file and runs the executable. You ca
 make run
 ```
 
+
+### Docker build
+A multistage `dockerfile` is provided that builds the go package in a container and run the command in another to reduce the image size. Building the image is done with
+```
+make docker-build
+```
+### Docker run
+The image can be ran using
+```
+make docker-run
+```
+
 ## Tests
 ### Unit tests
 The csv parser contains unit tests. You can run them using:
@@ -59,8 +71,23 @@ The csv parser contains unit tests. You can run them using:
 make test
 ```
 ### API tests
-Tests for the API are done with a bash script. 
+Tests for the API are done with a bash script. The script uses an argument to specify the host.
 
-### Docker build
-The 
-### Docker run
+If you run the docker container with the test script, you can pass `localhost` as argument.
+```
+bash test/test.sh localhost
+```
+or with: 
+```
+make api-test
+```
+
+### Docker
+The `Dockerfile.test` file provided uses the `test.sh` bash script.
+
+The docker image can be run with the API container with a `docker-compose` definition.
+The composed package can be run using 
+```
+docker-compose up
+```
+
